@@ -25,13 +25,18 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S'
 )
 
-# File path constants
+# ============================================================================
+# FILE PATH CONSTANTS
+# ============================================================================
+
 DATA_DIR = Path("Data")
-OUTPUT_DIR = Path(".")
 ACTIVITY_JSON_PATH = DATA_DIR / "milestone_activities_processed.json"
 FUNDING_JSON_PATH = DATA_DIR / "funding_tranches_processed.json"
 UC_JSON_PATH = DATA_DIR / "uc_processed.json"
 ACTIVITY_EXCEL_PATH = DATA_DIR / "Ivanti activity sheet_v2.xlsx"
+
+OUTPUT_DIR = DATA_DIR
+OUTPUT_DIR.mkdir(exist_ok=True)
 
 
 def load_json_data(filepath):

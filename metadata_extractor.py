@@ -22,8 +22,9 @@ logging.basicConfig(
 )
 
 # File paths
-EXCEL_FILE = Path("Data/Ivanti activity sheet_v2.xlsx")
-OUTPUT_FILE = Path("smart_filtered_metadata.txt")
+DATA_DIR = Path("Data")
+EXCEL_FILE = DATA_DIR / "Ivanti activity sheet_v2.xlsx"
+OUTPUT_FILE = DATA_DIR / "smart_filtered_metadata.txt"
 
 
 def clean_text_density(text):
