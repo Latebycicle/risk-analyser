@@ -19,6 +19,7 @@ output_data = {}
 output_data["monthly_planned_spending"] = {}
 output_data["cumulative_planned_spending"] = {}
 output_data["budget_line_totals"] = {}
+output_data["budget_line_monthly_plan"] = {}
 
 
 def clean_value(value):
@@ -69,11 +70,26 @@ for i in range(2, df.shape[0]):
     # Get the total from the "Plan Total 2025-26" column
     line_item_total = clean_value(df.iloc[i, plan_total_column])
     
+    # Create monthly plan dictionary for this budget line
+    monthly_plan_for_item = {}
+    for idx, month_col in enumerate(month_columns):
+        month_name = month_names[idx]
+        value = df.iloc[i, month_col]
+        cleaned_monthly_value = clean_value(value)
+        monthly_plan_for_item[month_name] = cleaned_monthly_value
+    
     # Add to or update the budget line total
     if line_item_name in output_data["budget_line_totals"]:
         output_data["budget_line_totals"][line_item_name] += line_item_total
+        # Aggregate monthly values for duplicate line items
+        if line_item_name in output_data["budget_line_monthly_plan"]:
+            for month_name in month_names:
+                output_data["budget_line_monthly_plan"][line_item_name][month_name] += monthly_plan_for_item[month_name]
+        else:
+            output_data["budget_line_monthly_plan"][line_item_name] = monthly_plan_for_item
     else:
         output_data["budget_line_totals"][line_item_name] = line_item_total
+        output_data["budget_line_monthly_plan"][line_item_name] = monthly_plan_for_item
 
 logging.info(f"Extracted {len(output_data['budget_line_totals'])} budget line items")
 

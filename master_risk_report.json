@@ -1,0 +1,20 @@
+[
+  {
+    "risk_type": "Cash Flow Deficit",
+    "severity": "High",
+    "month": "Mar-26",
+    "details": "Planned spending (\u20b99,908,304.00) exceeds available funding (\u20b99,908,303.60) by \u20b90.40"
+  },
+  {
+    "risk_type": "Activity Budget Mapping",
+    "severity": "Medium",
+    "activity": "Develop the content as per the project requirements",
+    "details": "No budget allocation found. Analysis: Developing content does not directly align with any specific budget line. The budget lines cover salaries, training aids, operational costs, etc., but there's no line for content development costs. This activity may fall under 'Training Aids - Knowledge Partner' or 'Training Aids - Assessment', but it's not a direct match. Hence, no logical match exists."
+  },
+  {
+    "risk_type": "Activity Budget Mapping",
+    "severity": "Medium",
+    "activity": "Identification of work opportunities",
+    "details": "No budget allocation found. Analysis: This activity is vague and does not clearly align with any specific budget line item. It may relate to job placement or opportunity identification, but without more context, it does not have a clear semantic match in the provided budget lines."
+  }
+]
