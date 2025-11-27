@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 from pathlib import Path
 from compliance_checker import check_contractual_timeline, call_ollama_api
+from metadata_extractor import extract_smart_metadata
 
 # Configure logging with timestamp
 logging.basicConfig(
@@ -227,10 +228,10 @@ def generate_statistics(uc_data, funding_data):
     """
     logging.info("Generating financial statistics...")
     
-    # Get total planned spend (last value from cumulative)
-    cumulative_spend = uc_data['cumulative_planned_spending']
+    # Get total planned spend (last value from cumulative) - updated for variance structure
+    cumulative_spend = uc_data['cumulative_data']
     budget_months = list(cumulative_spend.keys())
-    total_planned_spend = cumulative_spend[budget_months[-1]] if budget_months else 0
+    total_planned_spend = cumulative_spend[budget_months[-1]]['cumulative_planned'] if budget_months else 0
     
     # Get total funding
     total_funding = funding_data['total_billing_value']
@@ -238,8 +239,9 @@ def generate_statistics(uc_data, funding_data):
     # Calculate funding gap/surplus
     funding_gap = total_funding - total_planned_spend
     
-    # Get top 5 costs
-    budget_line_totals = uc_data['budget_line_totals']
+    # Get top 5 costs - updated to use total_planned
+    budget_lines = uc_data['budget_lines']
+    budget_line_totals = {key: line['total_planned'] for key, line in budget_lines.items()}
     sorted_costs = sorted(
         budget_line_totals.items(),
         key=lambda x: x[1],
@@ -282,9 +284,9 @@ def plot_cash_flow(uc_data, cumulative_funding_map, budget_months, output_file='
     """
     logging.info("Generating cash flow visualization...")
     
-    # Extract cumulative spend values for each month
+    # Extract cumulative spend values for each month - updated for variance structure
     cumulative_spend_values = [
-        uc_data['cumulative_planned_spending'][month]
+        uc_data['cumulative_data'][month]['cumulative_planned']
         for month in budget_months
     ]
     
@@ -367,9 +369,10 @@ def check_cash_flow_risk(uc_data, cumulative_funding_map):
     logging.info("Starting cash flow risk analysis...")
     risks = []
     
-    cumulative_spending = uc_data.get('cumulative_planned_spending', {})
+    cumulative_spending = uc_data.get('cumulative_data', {})
     
-    for month, planned_spend in cumulative_spending.items():
+    for month, month_data in cumulative_spending.items():
+        planned_spend = month_data.get('cumulative_planned', 0.0)
         available_funds = cumulative_funding_map.get(month, 0.0)
         
         if planned_spend > available_funds:
@@ -427,7 +430,109 @@ def check_contractual_timelines(funding_data):
     return risks
 
 
-def check_activity_budget_mapping(activity_data, uc_data):
+def check_strategic_risks(metadata_text, budget_dict):
+    """
+    Strategic Risk Auditor: Find contradictions between narrative and financial reality.
+    
+    Args:
+        metadata_text: Raw extracted metadata from project documents
+        budget_dict: Dictionary mapping budget line items to their allocated amounts
+        
+    Returns:
+        List of strategic risk objects (empty list if no genuine risks found)
+    """
+    logging.info("Starting strategic risk audit...")
+    risks = []
+    
+    # Truncate metadata if too long (use first 5000 chars for analysis)
+    metadata_snippet = metadata_text[:5000] if len(metadata_text) > 5000 else metadata_text
+    
+    # Format budget with amounts for better AI context
+    formatted_budget_list = "\n".join(
+        f"- {item}: ₹{amount:,.2f}" for item, amount in budget_dict.items()
+    )
+    
+    prompt = f"""You are a Strategic Risk Auditor.
+Project Context (Narrative):
+{metadata_snippet}
+
+Approved Budget Allocations:
+{formatted_budget_list}
+
+Task: Analyze for discrepancies between the Narrative goals and Financial reality.
+- Is a major activity described in the text but has ₹0 or low budget?
+- Is the timeline in the text different from the funding reality?
+- Are there compliance rules (audits, reports) in the text that are unfunded?
+
+Output: A JSON list of risk objects.
+IMPORTANT: Identify **only genuine** contradictions. Do not invent risks to fill a quota. If the project plan appears consistent, return an empty list [].
+"""
+    
+    # Define structured output schema
+    schema = {
+        "type": "array",
+        "items": {
+            "type": "object",
+            "properties": {
+                "risk_type": {"type": "string"},
+                "severity": {"type": "string"},
+                "details": {"type": "string"}
+            },
+            "required": ["risk_type", "severity", "details"]
+        }
+    }
+    
+    try:
+        # Use structured output with direct API call
+        import requests
+        payload = {
+            "model": "qwen3:4b",
+            "prompt": prompt,
+            "stream": False,
+            "format": schema,
+            "think": False,
+            "keep_alive": "5m",
+            "options": {
+                "temperature": 0.0,
+                "num_ctx": 8192
+            }
+        }
+        
+        response = requests.post("http://localhost:11434/api/generate", json=payload, timeout=300)
+        response.raise_for_status()
+        result = response.json()
+        response_text = result.get("response", "")
+        
+        # Parse JSON array
+        strategic_risks = json.loads(response_text)
+        
+        # Only add risks if we actually got some
+        if strategic_risks and len(strategic_risks) > 0:
+            for risk in strategic_risks:
+                risk_obj = {
+                    "risk_type": risk.get('risk_type', 'Strategic Risk'),
+                    "severity": risk.get('severity', 'Medium'),
+                    "details": risk.get('details', 'No details provided')
+                }
+                risks.append(risk_obj)
+                logging.warning(f"Strategic risk: {risk_obj['details'][:100]}...")
+        else:
+            logging.info("No strategic risks identified - project plan appears consistent.")
+        
+        logging.info(f"Strategic risk audit complete. Found {len(risks)} risk(s).")
+    
+    except Exception as e:
+        logging.error(f"Error in strategic risk analysis: {e}")
+        risks.append({
+            "risk_type": "Strategic Risk",
+            "severity": "Low",
+            "details": f"Strategic analysis failed: {str(e)}"
+        })
+    
+    return risks
+
+
+def check_activity_budget_mapping(activity_data, uc_data, company_context=""):
     """
     AI-Powered Check: Map activities to budget lines and identify unfunded activities.
     Uses batched processing with semantic matching instead of "find missing" logic.
@@ -435,6 +540,7 @@ def check_activity_budget_mapping(activity_data, uc_data):
     Args:
         activity_data: Processed activity data containing milestones and activities
         uc_data: Processed UC data containing budget line items
+        company_context: Company-specific rules for zero-cost activities and mappings
         
     Returns:
         List of risk objects for activities without budget
@@ -450,10 +556,17 @@ def check_activity_budget_mapping(activity_data, uc_data):
             if activity_name and activity_name not in unique_activities:
                 unique_activities.append(activity_name)
     
-    # Extract budget line items
-    budget_line_items = list(uc_data.get('budget_line_totals', {}).keys())
+    # Extract budget line items with cost heads information
+    budget_lines = uc_data.get('budget_lines', {})
+    budget_line_items = list(budget_lines.keys())
     
-    logging.info(f"Analyzing {len(unique_activities)} activities against {len(budget_line_items)} budget lines...")
+    # Also extract cost heads for semantic matching
+    all_cost_heads = []
+    for line_item, line_data in budget_lines.items():
+        cost_heads = line_data.get('cost_heads', [])
+        all_cost_heads.extend(cost_heads)
+    
+    logging.info(f"Analyzing {len(unique_activities)} activities against {len(budget_line_items)} budget lines (with {len(all_cost_heads)} cost heads)...")
     
     # Process activities in batches of 5 for better accuracy
     BATCH_SIZE = 5
@@ -465,24 +578,29 @@ def check_activity_budget_mapping(activity_data, uc_data):
         
         logging.info(f"Processing batch {batch_start//BATCH_SIZE + 1}/{(len(unique_activities)-1)//BATCH_SIZE + 1} ({len(batch_activities)} activities)...")
         
-        # Construct matching prompt
+        # Construct matching prompt with company context and budget lines
         prompt = f"""You are a budget analyst. Map each Project Activity to the most relevant Budget Line Item.
+
+Company Operational Context (Rules for exclusions):
+{company_context}
 
 Activities to Map:
 {chr(10).join('- ' + act for act in batch_activities)}
 
-Available Budget Lines:
-{chr(10).join('- ' + bud for bud in budget_line_items)}
+Available Budget Lines (with Cost Heads):
+{chr(10).join('- ' + key + ' (Cost Heads: ' + ', '.join(budget_lines[key]['cost_heads']) + ')' for key in budget_line_items)}
 
 Task:
-For each activity, find the BEST semantic match in the budget lines.
-- "Conduct assessment" matches "Training Aids - Assessment".
-- "Hire HR" matches "Salary - Project Manager" or similar.
-- If NO logical match exists, set "match": null.
+1. **Check the "Company Context" first.** If the activity is listed as "Zero-Cost" (e.g., approvals, emails, signing), set "match": "Administrative (No Budget Required)".
+2. **Otherwise, attempt to map to a Budget Line:**
+   - "Conduct assessment" matches "Training Aids - Assessment".
+   - "Hire HR" matches "Salary - Project Manager" or similar.
+   - "Training of Trainees" matches "Training of Trainees - Trainer 1" or "Training of Trainees - Trainer 2".
+   - If NO logical match exists, set "match": null.
 
 Return JSON list:
 [
-  {{"activity": "...", "match": "Budget Line Name" (or null), "reasoning": "..."}}
+  {{"activity": "...", "match": "Budget Line Name" or "Administrative (No Budget Required)" (or null), "reasoning": "..."}}
 ]
 """
         
@@ -565,6 +683,9 @@ Return JSON list:
             }
             risks.append(risk)
             logging.warning(f"Unfunded activity detected: {activity_name}")
+        elif match == "Administrative (No Budget Required)":
+            # Zero-cost administrative activity - log but don't flag as risk
+            logging.info(f"Activity '{activity_name}' identified as administrative (zero-cost): {reasoning}")
         else:
             # Match found - log but don't create risk
             logging.debug(f"Activity '{activity_name}' mapped to '{match}': {reasoning}")
@@ -595,8 +716,29 @@ if __name__ == "__main__":
     funding_data = load_json_data(FUNDING_JSON_PATH)
     uc_data = load_json_data(UC_JSON_PATH)
     
-    # Extract budget months from UC data
-    budget_months = list(uc_data['monthly_planned_spending'].keys())
+    # Load smart-filtered metadata for strategic analysis
+    logging.info("\nExtracting strategic metadata from Excel...")
+    raw_metadata_text = extract_smart_metadata(ACTIVITY_EXCEL_PATH)
+    logging.info(f"Metadata extracted: {len(raw_metadata_text):,} characters")
+    
+    # Load company context for zero-cost activity identification
+    company_context_file = DATA_DIR / "company_context.md"
+    company_context = ""
+    if company_context_file.exists():
+        with open(company_context_file, 'r', encoding='utf-8') as f:
+            company_context = f.read()
+        logging.info(f"Company context loaded: {len(company_context)} characters")
+    else:
+        logging.warning(f"Company context file not found: {company_context_file}")
+    
+    # Save metadata for record
+    metadata_file = OUTPUT_DIR / "project_metadata.txt"
+    with open(metadata_file, 'w', encoding='utf-8') as f:
+        f.write(raw_metadata_text)
+    logging.info(f"Metadata saved to: {metadata_file}")
+    
+    # Extract budget months from UC data (updated for new variance analysis structure)
+    budget_months = list(uc_data['monthly_data'].keys())
     logging.info(f"Budget period: {budget_months[0]} to {budget_months[-1]} ({len(budget_months)} months)")
     
     cumulative_funding = calculate_cumulative_funding(funding_data, budget_months)
@@ -631,9 +773,15 @@ if __name__ == "__main__":
     master_risk_report.extend(contractual_risks)
     
     # 3. Check Activity-Budget Mapping (AI-Powered)
-    logging.info("\n[3/3] Activity-Budget Mapping Analysis")
-    mapping_risks = check_activity_budget_mapping(activity_data, uc_data)
+    logging.info("\n[3/4] Activity-Budget Mapping Analysis")
+    mapping_risks = check_activity_budget_mapping(activity_data, uc_data, company_context)
     master_risk_report.extend(mapping_risks)
+    
+    # 4. Check Strategic Risks (AI-Failsafe with Metadata) - updated for variance structure
+    logging.info("\n[4/4] Strategic Risk Audit (Narrative vs Budget)")
+    budget_dict = {key: line['total_planned'] for key, line in uc_data['budget_lines'].items()}
+    strategic_risks = check_strategic_risks(raw_metadata_text, budget_dict)
+    master_risk_report.extend(strategic_risks)
     
     # Summary
     logging.info("\n" + "=" * 80)
@@ -643,6 +791,7 @@ if __name__ == "__main__":
     logging.info(f"  - Cash Flow Deficits: {len(cash_flow_risks)}")
     logging.info(f"  - Contractual Timeline Risks: {len(contractual_risks)}")
     logging.info(f"  - Activity-Budget Mapping Issues: {len(mapping_risks)}")
+    logging.info(f"  - Strategic Risks: {len(strategic_risks)}")
     
     # Save risk report to JSON
     risk_report_path = OUTPUT_DIR / "master_risk_report.json"
