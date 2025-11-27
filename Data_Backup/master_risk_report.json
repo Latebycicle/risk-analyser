@@ -1,0 +1,29 @@
+[
+  {
+    "risk_type": "Cash Flow Deficit",
+    "severity": "High",
+    "month": "Dec-25",
+    "details": "Planned spending (\u20b9175,950.00) exceeds available funding (\u20b90.00) by \u20b9175,950.00"
+  },
+  {
+    "risk_type": "Cash Flow Deficit",
+    "severity": "High",
+    "month": "Feb-26",
+    "details": "Planned spending (\u20b9351,900.00) exceeds available funding (\u20b90.00) by \u20b9351,900.00"
+  },
+  {
+    "risk_type": "budget_discrepancy",
+    "severity": "high",
+    "details": "The project plan states that 1,980 candidates will be trained across 9 colleges and 3 ETCs, with 480 candidates trained in colleges and 180 in ETCs per location. However, the budget allocations show a total manpower cost of \u20b9253,000 (Project Coordinator: \u20b9177,800 + TM/RM/Supervisor: \u20b938,100 + Project Manager: \u20b938,100) for a project that requires training 1,980 candidates. This suggests a severe underfunding for human resources, as the budget does not account for the scale of the project. The project coordinator's budget is \u20b9177,800 for a project that requires managing 1,980 candidates across multiple locations and institutions, which is insufficient for the scale of the project."
+  },
+  {
+    "risk_type": "timeline_discrepancy",
+    "severity": "medium",
+    "details": "The project timeline spans from September 2025 to March 2026 (approximately 6 months). However, the budget allocations do not specify any timeline for the implementation of key activities such as training delivery, assessment, certification, and placements. The project requires 50% placements post-certification (990 candidates), but the budget does not account for the time needed to achieve this, which could be a significant challenge given the short timeline."
+  },
+  {
+    "risk_type": "compliance_gap",
+    "severity": "high",
+    "details": "The project plan includes continuous monitoring and evaluation (M&E) and post-placement tracking for 3 months. However, the budget allocations for M&E and Impact Reporting are only \u20b990,000, which is insufficient to cover the costs of continuous monitoring for 1,980 candidates over 3 months. Additionally, the project requires a final program report with outcomes and learnings, but the budget does not include sufficient funds for comprehensive data analysis and reporting, which could lead to non-compliance with the project's own monitoring and evaluation requirements."
+  }
+]

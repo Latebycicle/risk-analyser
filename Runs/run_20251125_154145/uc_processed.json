@@ -1,0 +1,708 @@
+{
+  "monthly_data": {
+    "2025-11": {
+      "planned": 140415.0,
+      "claims": 0.0,
+      "d365": 0.0,
+      "total_spent": 0.0,
+      "variance": 140415.0
+    },
+    "2025-12": {
+      "planned": 175950.0,
+      "claims": 0.0,
+      "d365": 0.0,
+      "total_spent": 0.0,
+      "variance": 175950.0
+    },
+    "2026-01": {
+      "planned": 208725.0,
+      "claims": 0.0,
+      "d365": 0.0,
+      "total_spent": 0.0,
+      "variance": 208725.0
+    },
+    "2026-02": {
+      "planned": 175950.0,
+      "claims": 0.0,
+      "d365": 0.0,
+      "total_spent": 0.0,
+      "variance": 175950.0
+    },
+    "2026-03": {
+      "planned": 140760.0,
+      "claims": 0.0,
+      "d365": 0.0,
+      "total_spent": 0.0,
+      "variance": 140760.0
+    }
+  },
+  "cumulative_data": {
+    "2025-11": {
+      "cumulative_planned": 140415.0,
+      "cumulative_spent": 0.0,
+      "cumulative_variance": 140415.0
+    },
+    "2025-12": {
+      "cumulative_planned": 316365.0,
+      "cumulative_spent": 0.0,
+      "cumulative_variance": 316365.0
+    },
+    "2026-01": {
+      "cumulative_planned": 525090.0,
+      "cumulative_spent": 0.0,
+      "cumulative_variance": 525090.0
+    },
+    "2026-02": {
+      "cumulative_planned": 701040.0,
+      "cumulative_spent": 0.0,
+      "cumulative_variance": 701040.0
+    },
+    "2026-03": {
+      "cumulative_planned": 841800.0,
+      "cumulative_spent": 0.0,
+      "cumulative_variance": 841800.0
+    }
+  },
+  "budget_lines": {
+    "Manpower Cost - Project Coordinator": {
+      "budget_head": "Manpower Cost",
+      "vendor_role_category": "Project Coordinator",
+      "total_planned": 177800.0,
+      "total_spent": 0.0,
+      "total_variance": 177800.0,
+      "monthly_data": {
+        "2025-11": {
+          "planned": 8890.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 8890.0
+        },
+        "2025-12": {
+          "planned": 44450.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 44450.0
+        },
+        "2026-01": {
+          "planned": 44450.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 44450.0
+        },
+        "2026-02": {
+          "planned": 44450.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 44450.0
+        },
+        "2026-03": {
+          "planned": 35560.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 35560.0
+        }
+      },
+      "cost_heads": [
+        "Project Coordinator cum Facilitator 1",
+        "Project Coordinator cum Facilitator 2"
+      ]
+    },
+    "Manpower Cost - TM/RM/Supervisor": {
+      "budget_head": "Manpower Cost",
+      "vendor_role_category": "TM/RM/Supervisor",
+      "total_planned": 38100.0,
+      "total_spent": 0.0,
+      "total_variance": 38100.0,
+      "monthly_data": {
+        "2025-11": {
+          "planned": 1905.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 1905.0
+        },
+        "2025-12": {
+          "planned": 9525.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 9525.0
+        },
+        "2026-01": {
+          "planned": 9525.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 9525.0
+        },
+        "2026-02": {
+          "planned": 9525.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 9525.0
+        },
+        "2026-03": {
+          "planned": 7620.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 7620.0
+        }
+      },
+      "cost_heads": [
+        "Operations Supervisor / Territory Manager"
+      ]
+    },
+    "Manpower Cost - Project Manager": {
+      "budget_head": "Manpower Cost",
+      "vendor_role_category": "Project Manager",
+      "total_planned": 38100.0,
+      "total_spent": 0.0,
+      "total_variance": 38100.0,
+      "monthly_data": {
+        "2025-11": {
+          "planned": 1905.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 1905.0
+        },
+        "2025-12": {
+          "planned": 9525.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 9525.0
+        },
+        "2026-01": {
+          "planned": 9525.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 9525.0
+        },
+        "2026-02": {
+          "planned": 9525.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 9525.0
+        },
+        "2026-03": {
+          "planned": 7620.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 7620.0
+        }
+      },
+      "cost_heads": [
+        "Project Manager"
+      ]
+    },
+    "Travel and communication cost of staff - Travel": {
+      "budget_head": "Travel and communication cost of staff",
+      "vendor_role_category": "Travel",
+      "total_planned": 40000.0,
+      "total_spent": 0.0,
+      "total_variance": 40000.0,
+      "monthly_data": {
+        "2025-11": {
+          "planned": 2000.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 2000.0
+        },
+        "2025-12": {
+          "planned": 10000.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 10000.0
+        },
+        "2026-01": {
+          "planned": 10000.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 10000.0
+        },
+        "2026-02": {
+          "planned": 10000.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 10000.0
+        },
+        "2026-03": {
+          "planned": 8000.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 8000.0
+        }
+      },
+      "cost_heads": [
+        "Travel"
+      ]
+    },
+    "Content customization/ Detail of scheme ,Handout & Leaflet about scheme (Printed document with scheme details  ) - Knowledge Partner": {
+      "budget_head": "Content customization/ Detail of scheme ,Handout & Leaflet about scheme (Printed document with scheme details  )",
+      "vendor_role_category": "Knowledge Partner",
+      "total_planned": 60000.0,
+      "total_spent": 0.0,
+      "total_variance": 60000.0,
+      "monthly_data": {
+        "2025-11": {
+          "planned": 60000.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 60000.0
+        }
+      },
+      "cost_heads": [
+        "Content customization/ Detail of scheme ,Handout & Leaflet about scheme (Printed document with scheme details  ) including translation"
+      ]
+    },
+    "Printing & Stationary & Training material - Printing & Stationery": {
+      "budget_head": "Printing & Stationary & Training material",
+      "vendor_role_category": "Printing & Stationery",
+      "total_planned": 30000.0,
+      "total_spent": 0.0,
+      "total_variance": 30000.0,
+      "monthly_data": {
+        "2025-11": {
+          "planned": 1500.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 1500.0
+        },
+        "2025-12": {
+          "planned": 7500.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 7500.0
+        },
+        "2026-01": {
+          "planned": 7500.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 7500.0
+        },
+        "2026-02": {
+          "planned": 7500.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 7500.0
+        },
+        "2026-03": {
+          "planned": 6000.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 6000.0
+        }
+      },
+      "cost_heads": [
+        "Printing & Stationary & Training material"
+      ]
+    },
+    "Participant certificate - SME/Experts/TOT": {
+      "budget_head": "Participant certificate",
+      "vendor_role_category": "SME/Experts/TOT",
+      "total_planned": 3000.0,
+      "total_spent": 0.0,
+      "total_variance": 3000.0,
+      "monthly_data": {
+        "2025-11": {
+          "planned": 3000.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 3000.0
+        }
+      },
+      "cost_heads": [
+        "Participant certificate designing"
+      ]
+    },
+    "Participant certificate - Printing & Stationery": {
+      "budget_head": "Participant certificate",
+      "vendor_role_category": "Printing & Stationery",
+      "total_planned": 57000.0,
+      "total_spent": 0.0,
+      "total_variance": 57000.0,
+      "monthly_data": {
+        "2025-11": {
+          "planned": 28500.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 28500.0
+        },
+        "2026-01": {
+          "planned": 28500.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 28500.0
+        }
+      },
+      "cost_heads": [
+        "Particpant Certificate printing"
+      ]
+    },
+    "Documentation & consultation (Through phone) - MIS": {
+      "budget_head": "Documentation & consultation (Through phone)",
+      "vendor_role_category": "MIS",
+      "total_planned": 63000.0,
+      "total_spent": 0.0,
+      "total_variance": 63000.0,
+      "monthly_data": {
+        "2025-11": {
+          "planned": 3150.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 3150.0
+        },
+        "2025-12": {
+          "planned": 15750.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 15750.0
+        },
+        "2026-01": {
+          "planned": 15750.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 15750.0
+        },
+        "2026-02": {
+          "planned": 15750.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 15750.0
+        },
+        "2026-03": {
+          "planned": 12600.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 12600.0
+        }
+      },
+      "cost_heads": [
+        "MIS & Beneficiary Support Executive"
+      ]
+    },
+    "Documentation & consultation (Through phone) - Utilities": {
+      "budget_head": "Documentation & consultation (Through phone)",
+      "vendor_role_category": "Utilities",
+      "total_planned": 27000.0,
+      "total_spent": 0.0,
+      "total_variance": 27000.0,
+      "monthly_data": {
+        "2025-11": {
+          "planned": 1350.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 1350.0
+        },
+        "2025-12": {
+          "planned": 6750.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 6750.0
+        },
+        "2026-01": {
+          "planned": 6750.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 6750.0
+        },
+        "2026-02": {
+          "planned": 6750.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 6750.0
+        },
+        "2026-03": {
+          "planned": 5400.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 5400.0
+        }
+      },
+      "cost_heads": [
+        "Communication Cost for phone consultation"
+      ]
+    },
+    "Laptop, Projector & Internet on rent - Utilities": {
+      "budget_head": "Laptop, Projector & Internet on rent",
+      "vendor_role_category": "Utilities",
+      "total_planned": 60000.0,
+      "total_spent": 0.0,
+      "total_variance": 60000.0,
+      "monthly_data": {
+        "2025-11": {
+          "planned": 3000.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 3000.0
+        },
+        "2025-12": {
+          "planned": 15000.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 15000.0
+        },
+        "2026-01": {
+          "planned": 15000.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 15000.0
+        },
+        "2026-02": {
+          "planned": 15000.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 15000.0
+        },
+        "2026-03": {
+          "planned": 12000.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 12000.0
+        }
+      },
+      "cost_heads": [
+        "Laptop, Projector & Internet on rent"
+      ]
+    },
+    "Post awareness  Survey, analysis and report - M&E, Impact Reporting": {
+      "budget_head": "Post awareness  Survey, analysis and report",
+      "vendor_role_category": "M&E, Impact Reporting",
+      "total_planned": 90000.0,
+      "total_spent": 0.0,
+      "total_variance": 90000.0,
+      "monthly_data": {
+        "2025-11": {
+          "planned": 4500.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 4500.0
+        },
+        "2025-12": {
+          "planned": 22500.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 22500.0
+        },
+        "2026-01": {
+          "planned": 22500.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 22500.0
+        },
+        "2026-02": {
+          "planned": 22500.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 22500.0
+        },
+        "2026-03": {
+          "planned": 18000.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 18000.0
+        }
+      },
+      "cost_heads": [
+        "Post awareness  Survey, analysis and report"
+      ]
+    },
+    "IT platform cost to capture beneficiary data - Platform": {
+      "budget_head": "IT platform cost to capture beneficiary data",
+      "vendor_role_category": "Platform",
+      "total_planned": 48000.0,
+      "total_spent": 0.0,
+      "total_variance": 48000.0,
+      "monthly_data": {
+        "2025-11": {
+          "planned": 2400.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 2400.0
+        },
+        "2025-12": {
+          "planned": 12000.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 12000.0
+        },
+        "2026-01": {
+          "planned": 12000.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 12000.0
+        },
+        "2026-02": {
+          "planned": 12000.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 12000.0
+        },
+        "2026-03": {
+          "planned": 9600.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 9600.0
+        }
+      },
+      "cost_heads": [
+        "IT platform cost to capture beneficiary data"
+      ]
+    },
+    "Contingency - Contingency/adhoc": {
+      "budget_head": "Contingency",
+      "vendor_role_category": "Contingency/adhoc",
+      "total_planned": 36600.0,
+      "total_spent": 0.0,
+      "total_variance": 36600.0,
+      "monthly_data": {
+        "2025-11": {
+          "planned": 6105.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 6105.0
+        },
+        "2025-12": {
+          "planned": 7650.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 7650.0
+        },
+        "2026-01": {
+          "planned": 9075.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 9075.0
+        },
+        "2026-02": {
+          "planned": 7650.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 7650.0
+        },
+        "2026-03": {
+          "planned": 6120.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 6120.0
+        }
+      },
+      "cost_heads": [
+        "Contingency @ 5%"
+      ]
+    },
+    "Administration Cost - Overheads": {
+      "budget_head": "Administration Cost",
+      "vendor_role_category": "Overheads",
+      "total_planned": 73200.0,
+      "total_spent": 0.0,
+      "total_variance": 73200.0,
+      "monthly_data": {
+        "2025-11": {
+          "planned": 12210.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 12210.0
+        },
+        "2025-12": {
+          "planned": 15300.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 15300.0
+        },
+        "2026-01": {
+          "planned": 18150.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 18150.0
+        },
+        "2026-02": {
+          "planned": 15300.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 15300.0
+        },
+        "2026-03": {
+          "planned": 12240.0,
+          "claims": 0.0,
+          "d365": 0.0,
+          "total_spent": 0.0,
+          "variance": 12240.0
+        }
+      },
+      "cost_heads": [
+        "Admin & Project management cost"
+      ]
+    }
+  },
+  "processing_metadata": {
+    "sparse_storage": true,
+    "decimal_places": 2,
+    "date_format": "YYYY-MM (normalized)",
+    "months_processed": 13
+  },
+  "grand_totals": {
+    "total_planned": 841800.0,
+    "total_spent": 0.0,
+    "total_variance": 841800.0
+  }
+}

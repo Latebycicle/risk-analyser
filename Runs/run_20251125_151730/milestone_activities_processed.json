@@ -1,0 +1,108 @@
+{
+    "Content Customization / Scheme Details Handouts & Leaflets": [
+        {
+            "activity": "- Prepare awareness presentation on schemes\n- Translate into Hindi, Malayalam, Tamil\n- Content QA & approval",
+            "start_date_iso": "2025-11-01",
+            "end_date_iso": "2025-11-01",
+            "duration_in_days": 1
+        }
+    ],
+    "Documentation & Consultation (Through Phone)": [
+        {
+            "activity": "- Set up dedicated helpline number\n- Attend participant calls post-camp\n- Record type of queries for documentation",
+            "start_date_iso": "2025-11-01",
+            "end_date_iso": "2026-03-01",
+            "duration_in_days": 121
+        }
+    ],
+    "Documentation & Reporting": [
+        {
+            "activity": " - Share the list of documents required for each scheme with donor POC which can be shared with participants during mobilization\n- Compile camp-wise MIS\n- Prepare monthly progress updates\n- Final consolidated report for donor",
+            "start_date_iso": "2025-11-01",
+            "end_date_iso": "2026-03-01",
+            "duration_in_days": 121
+        }
+    ],
+    "IT Platform to Capture Beneficiary Data": [
+        {
+            "activity": "- Develop data template\n- Capture beneficiary details at camp\n- Ensure accuracy and validation\n- Maintain backend access and data security",
+            "start_date_iso": "2025-11-01",
+            "end_date_iso": "2026-03-01",
+            "duration_in_days": 121
+        }
+    ],
+    "Laptop, Projector & Internet on Rent": [
+        {
+            "activity": "- Arrange 1 laptop and projector for all 20 camps\n- Ensure backup internet/dongle availability\n- Coordinate renting and maintenance",
+            "start_date_iso": "2025-11-01",
+            "end_date_iso": "2026-03-01",
+            "duration_in_days": 121
+        }
+    ],
+    "Manpower  (Team Lead, Expert, Operations Incharge)": [
+        {
+            "activity": "- Assign project manager, operations supervisor, coordinators, MIS person",
+            "start_date_iso": "2025-11-01",
+            "end_date_iso": "2025-11-01",
+            "duration_in_days": 1
+        },
+        {
+            "activity": "- Develop month-wise deployment plan\n- Ensure attendance, travel, reporting compliance\n- Oversight of quality, MIS, donor updates",
+            "start_date_iso": "2025-11-01",
+            "end_date_iso": "2025-11-01",
+            "duration_in_days": 1
+        }
+    ],
+    "Participant Certificates": [
+        {
+            "activity": "- Coordinate with martketing team for certificate design\n- Marketing team to design certificate and share for donor approval\n- Take donor approval on final certificate design",
+            "start_date_iso": "2025-11-01",
+            "end_date_iso": "2025-11-01",
+            "duration_in_days": 1
+        },
+        {
+            "activity": "- Print certificates \n- Distribute certificate to all enrolled participants during camp\n- Take certificate received acknowledgement",
+            "start_date_iso": "2025-11-01",
+            "end_date_iso": "2026-03-01",
+            "duration_in_days": 121
+        }
+    ],
+    "Post-Awareness Survey, Analysis & Reporting": [
+        {
+            "activity": "- Coordinate and prepare post awareness survey questionnaire\n- Share the questionnaire with the project coordinators with instructions to get the response of all participants",
+            "start_date_iso": "2025-11-01",
+            "end_date_iso": "2025-11-01",
+            "duration_in_days": 1
+        },
+        {
+            "activity": "- Conduct post-awareness survey at camp\n- Share the survey data with the impact assessment team for analysis\n- Impact Team to prepare survey reports\n- Impact Team to prepare end of project impact report",
+            "start_date_iso": "2025-11-01",
+            "end_date_iso": "2026-03-01",
+            "duration_in_days": 121
+        }
+    ],
+    "Printing & Stationery & Training Material": [
+        {
+            "activity": "- Pring forms, any other material required for training\n- Procure stationery (pens, registers, markers)",
+            "start_date_iso": "2025-11-01",
+            "end_date_iso": "2026-03-01",
+            "duration_in_days": 121
+        }
+    ],
+    "Training": [
+        {
+            "activity": "- Conduct 20 awareness sessions\n- Manage participant flow & seating\n- Ensure smooth delivery using PPT\n- Maintain attendance & enrolment support",
+            "start_date_iso": "2025-11-01",
+            "end_date_iso": "2026-03-01",
+            "duration_in_days": 121
+        }
+    ],
+    "Travel of Staff": [
+        {
+            "activity": "- plan travel for coordinators & team per camp- Local transport arrangements",
+            "start_date_iso": "2025-11-01",
+            "end_date_iso": "2026-03-01",
+            "duration_in_days": 121
+        }
+    ]
+}

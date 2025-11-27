@@ -128,20 +128,25 @@ Return JSON: {{"relevant": true/false, "reason": "..."}}
         return True
 
 
-def main():
-    """Main execution: Smart filter Excel sheets and extract valuable metadata."""
+def extract_smart_metadata(excel_file_path):
+    """
+    Smart filter Excel sheets and extract valuable metadata.
     
-    logging.info("=" * 80)
-    logging.info("SMART METADATA FILTER - EXCEL SHEET ANALYSIS")
-    logging.info("=" * 80)
+    Args:
+        excel_file_path: Path to the Excel file to process
+        
+    Returns:
+        String containing filtered metadata corpus from relevant sheets
+    """
+    excel_file = Path(excel_file_path)
     
-    if not EXCEL_FILE.exists():
-        logging.error(f"Excel file not found: {EXCEL_FILE}")
-        return
+    if not excel_file.exists():
+        logging.error(f"Excel file not found: {excel_file}")
+        return ""
     
     # Load Excel file
-    logging.info(f"Loading Excel file: {EXCEL_FILE}")
-    xl_file = pd.ExcelFile(EXCEL_FILE)
+    logging.info(f"Loading Excel file: {excel_file}")
+    xl_file = pd.ExcelFile(excel_file)
     all_sheets = xl_file.sheet_names
     
     logging.info(f"Found {len(all_sheets)} sheets in workbook")
@@ -243,25 +248,35 @@ def main():
         
         logging.info("")
     
-    # Save output
-    logging.info("=" * 80)
-    logging.info("SAVING FILTERED METADATA")
-    logging.info("=" * 80)
-    
-    with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
-        f.write(final_metadata_corpus)
-    
     # Print statistics
-    logging.info(f"\nMetadata filtering complete!")
+    logging.info("=" * 80)
+    logging.info(f"Metadata filtering complete!")
     logging.info(f"  Original Sheets: {original_sheet_count}")
     logging.info(f"  Auto-Included (small): {auto_included_count}")
     logging.info(f"  AI-Approved (large): {relevant_sheet_count}")
     logging.info(f"  Skipped Sheets: {skipped_sheet_count}")
     logging.info(f"  Total Included: {auto_included_count + relevant_sheet_count}")
     logging.info(f"  Total Characters: {len(final_metadata_corpus):,}")
-    logging.info(f"\nOutput saved to: {OUTPUT_FILE}")
     logging.info("=" * 80)
+    
+    return final_metadata_corpus
 
 
 if __name__ == "__main__":
-    main()
+    # Test the module independently
+    logging.info("=" * 80)
+    logging.info("SMART METADATA EXTRACTOR - STANDALONE TEST")
+    logging.info("=" * 80)
+    
+    test_file = DATA_DIR / "Ivanti activity sheet_v2.xlsx"
+    metadata = extract_smart_metadata(test_file)
+    
+    # Save for testing
+    output_file = DATA_DIR / "smart_filtered_metadata.txt"
+    with open(output_file, 'w', encoding='utf-8') as f:
+        f.write(metadata)
+    
+    logging.info(f"\nTest complete!")
+    logging.info(f"Extracted metadata length: {len(metadata):,} characters")
+    logging.info(f"Output saved to: {output_file}")
+    logging.info("=" * 80)

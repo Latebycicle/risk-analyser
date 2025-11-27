@@ -1,0 +1,23 @@
+{
+    "total_billing_value": 9908303.6,
+    "tranches": [
+        {
+            "milestone": "Signing of MoU",
+            "billing_value": 3467906.0,
+            "expected_billing_date_str": "2025-09-01 00:00:00",
+            "contractual_timeline_str": "Advance"
+        },
+        {
+            "milestone": "Batch 1 training & assessment completed & placement started, B2 training ongoing",
+            "billing_value": 3467906.4,
+            "expected_billing_date_str": "2025-11-01 00:00:00",
+            "contractual_timeline_str": "2nd Installment"
+        },
+        {
+            "milestone": "B2 placements completed, B3 placement process initiated, B4 launched",
+            "billing_value": 2972491.1999999997,
+            "expected_billing_date_str": "2026-01-01 00:00:00",
+            "contractual_timeline_str": "3rd Installment"
+        }
+    ]
+}
