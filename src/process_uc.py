@@ -38,7 +38,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 try:
     from config.settings import (
-        DATA_DIR, RUNS_DIR,
+        RUNS_DIR,
         BUDGET_HEAD_KEYWORDS, VENDOR_ROLE_KEYWORDS, COST_HEAD_KEYWORDS,
         PLAN_KEYWORDS, CLAIMS_KEYWORDS, D365_KEYWORDS,
         MONTH_ABBREVIATIONS, HEADER_SEARCH_ROWS,
@@ -47,7 +47,6 @@ try:
     )
 except ImportError:
     # Fallback for standalone execution
-    DATA_DIR = Path("Data")
     RUNS_DIR = Path("Runs")
     BUDGET_HEAD_KEYWORDS = ['budget head', 'budget_head', 'budget', 'head']
     VENDOR_ROLE_KEYWORDS = ['vendor', 'role', 'vendor/role', 'category', 'vendor role']
@@ -398,12 +397,12 @@ def process_uc_file(excel_file, sheet_name='Sheet1', run_dir=None):
         if budget_line_key not in output_data["budget_lines"]:
             output_data["budget_lines"][budget_line_key] = {
                 "budget_head": str(budget_head).strip(),
+                "cost_heads": [],
                 "vendor_role_category": str(vendor_role).strip() if pd.notna(vendor_role) else None,
                 "total_planned": 0.0,
                 "total_spent": 0.0,
                 "total_variance": 0.0,
-                "monthly_data": {},
-                "cost_heads": []
+                "monthly_data": {}
             }
         
         # Process each month
@@ -557,31 +556,23 @@ def process_uc_file(excel_file, sheet_name='Sheet1', run_dir=None):
     return output_data
 
 
-def save_uc_data(output_data, run_dir=None, legacy_path=None):
+def save_uc_data(output_data, run_dir):
     """
-    Save UC processed data to JSON files.
+    Save UC processed data to JSON file.
     
     Args:
         output_data: Processed UC data dictionary
-        run_dir: Directory for timestamped run output
-        legacy_path: Path for backward-compatible output
+        run_dir: Directory for run output (REQUIRED)
     """
-    # Save to run directory if provided
-    if run_dir:
-        run_dir = Path(run_dir)
-        run_dir.mkdir(parents=True, exist_ok=True)
-        output_file = run_dir / "uc_processed.json"
-        with open(output_file, "w") as f:
-            json.dump(output_data, f, indent=2)  # Use indent=2 to save space
-        logging.info(f"Saved to: {output_file}")
+    if not run_dir:
+        raise ValueError("run_dir is required - no legacy Data/ folder support")
     
-    # Save legacy copy
-    if legacy_path:
-        legacy_path = Path(legacy_path)
-        legacy_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(legacy_path, "w") as f:
-            json.dump(output_data, f, indent=2)
-        logging.info(f"Legacy copy: {legacy_path}")
+    run_dir = Path(run_dir)
+    run_dir.mkdir(parents=True, exist_ok=True)
+    output_file = run_dir / "uc_processed.json"
+    with open(output_file, "w") as f:
+        json.dump(output_data, f, indent=2)
+    logging.info(f"Saved to: {output_file}")
 
 
 # ============================================================================
@@ -589,35 +580,25 @@ def save_uc_data(output_data, run_dir=None, legacy_path=None):
 # ============================================================================
 
 if __name__ == "__main__":
-    # Configuration for standalone execution
-    EXCEL_FILE = Path('Data/Tata Bluescope UC Plan.xlsx')
-    SHEET_NAME = 'Sheet1'
+    import argparse
     
-    # Check if file exists
-    if not EXCEL_FILE.exists():
-        # Try alternate path
-        EXCEL_FILE = Path('data/Tata Bluescope UC Plan.xlsx')
+    parser = argparse.ArgumentParser(description='Process UC Excel file')
+    parser.add_argument('excel_file', help='Path to UC Excel file')
+    parser.add_argument('run_dir', help='Path to run output directory')
+    parser.add_argument('--sheet', default='Sheet1', help='Sheet name (default: Sheet1)')
     
-    if not EXCEL_FILE.exists():
-        logging.error(f"UC Excel file not found: {EXCEL_FILE}")
+    args = parser.parse_args()
+    
+    excel_file = Path(args.excel_file)
+    run_dir = Path(args.run_dir)
+    
+    if not excel_file.exists():
+        logging.error(f"UC Excel file not found: {excel_file}")
         sys.exit(1)
     
     # Process the file
-    output_data = process_uc_file(EXCEL_FILE, SHEET_NAME)
+    output_data = process_uc_file(excel_file, args.sheet)
     
-    # Import run manager for output
-    try:
-        from run_manager import get_current_run_id, get_run_output_dir, create_new_run
-        
-        run_id = get_current_run_id()
-        if run_id is None:
-            run_id, run_dir = create_new_run()
-        else:
-            run_dir = get_run_output_dir()
-        
-        save_uc_data(output_data, run_dir, Path("Data/uc_processed.json"))
-        logging.info(f"Run ID: {run_id}")
-        
-    except ImportError:
-        # Fallback: just save to Data/
-        save_uc_data(output_data, legacy_path=Path("Data/uc_processed.json"))
+    # Save to run directory only
+    save_uc_data(output_data, run_dir)
+    logging.info(f"UC processing complete. Output: {run_dir / 'uc_processed.json'}")

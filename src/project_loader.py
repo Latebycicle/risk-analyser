@@ -126,6 +126,12 @@ class ProjectLoader:
                 continue
             
             filename = file_path.name
+            
+            # Skip temporary/lock files created by Excel, Word, etc.
+            if filename.startswith('~$') or filename.startswith('.'):
+                logging.debug(f"  ⊗ Skipping temporary file: {filename}")
+                continue
+            
             filename_lower = filename.lower()
             file_ext = file_path.suffix.lower()
             

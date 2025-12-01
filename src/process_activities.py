@@ -20,11 +20,9 @@ PROJECT_ROOT = Path(__file__).parent.parent.resolve()
 sys.path.insert(0, str(PROJECT_ROOT))
 
 try:
-    from config.settings import DATA_DIR
-    from src.run_manager import get_current_run_id, get_run_output_dir, create_new_run
+    from config.settings import RUNS_DIR
 except ImportError:
-    DATA_DIR = PROJECT_ROOT / "Data"
-    from run_manager import get_current_run_id, get_run_output_dir, create_new_run
+    RUNS_DIR = PROJECT_ROOT / "Runs"
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
@@ -225,48 +223,39 @@ def process_activities_file(excel_file, sheet_name=None):
     return ordered_data
 
 
-def save_activities_data(data, run_dir=None, legacy_path=None):
-    """Save activities data to JSON files."""
+def save_activities_data(data, run_dir):
+    """Save activities data to JSON file."""
+    if not run_dir:
+        raise ValueError("run_dir is required - no legacy Data/ folder support")
     
-    if run_dir:
-        run_dir = Path(run_dir)
-        run_dir.mkdir(parents=True, exist_ok=True)
-        output_file = run_dir / "milestone_activities_processed.json"
-        with open(output_file, "w") as f:
-            json.dump(data, f, indent=2)
-        logging.info(f"Saved to: {output_file}")
-    
-    if legacy_path:
-        legacy_path = Path(legacy_path)
-        legacy_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(legacy_path, "w") as f:
-            json.dump(data, f, indent=2)
-        logging.info(f"Legacy copy: {legacy_path}")
+    run_dir = Path(run_dir)
+    run_dir.mkdir(parents=True, exist_ok=True)
+    output_file = run_dir / "milestone_activities_processed.json"
+    with open(output_file, "w") as f:
+        json.dump(data, f, indent=2)
+    logging.info(f"Saved to: {output_file}")
 
 
 if __name__ == "__main__":
-    # Default file path
-    EXCEL_FILE = DATA_DIR / 'Tata Bluescope_Plan_v1.0_20-Nov-2025.xlsx'
+    import argparse
     
-    if not EXCEL_FILE.exists():
-        EXCEL_FILE = Path('Data/Tata Bluescope_Plan_v1.0_20-Nov-2025.xlsx')
+    parser = argparse.ArgumentParser(description='Process Activity Plan Excel file')
+    parser.add_argument('excel_file', help='Path to Activity Plan Excel file')
+    parser.add_argument('run_dir', help='Path to run output directory')
+    parser.add_argument('--sheet', default=None, help='Sheet name (default: auto-detect)')
     
-    if not EXCEL_FILE.exists():
-        logging.error(f"Activity file not found: {EXCEL_FILE}")
+    args = parser.parse_args()
+    
+    excel_file = Path(args.excel_file)
+    run_dir = Path(args.run_dir)
+    
+    if not excel_file.exists():
+        logging.error(f"Activity file not found: {excel_file}")
         sys.exit(1)
     
     # Process the file
-    data = process_activities_file(EXCEL_FILE)
+    data = process_activities_file(excel_file, args.sheet)
     
-    # Get run directory
-    try:
-        run_id = get_current_run_id()
-        if run_id is None:
-            run_id, run_dir = create_new_run()
-        else:
-            run_dir = get_run_output_dir()
-        
-        save_activities_data(data, run_dir, DATA_DIR / "milestone_activities_processed.json")
-        logging.info(f"Run ID: {run_id}")
-    except Exception as e:
-        save_activities_data(data, legacy_path=DATA_DIR / "milestone_activities_processed.json")
+    # Save to run directory only
+    save_activities_data(data, run_dir)
+    logging.info(f"Activity processing complete. Output: {run_dir / 'milestone_activities_processed.json'}")

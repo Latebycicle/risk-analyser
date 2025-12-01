@@ -2,3 +2,9 @@
 Data/
 venv/Data/
 venv/
+Runs/
+archive/
+config/
+Report/
+Data_Backup/
+Test_Report/

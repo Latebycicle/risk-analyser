@@ -21,46 +21,29 @@ import logging
 # Get project root (parent of config/)
 PROJECT_ROOT = Path(__file__).parent.parent.resolve()
 
-# Main directories
-DATA_DIR = PROJECT_ROOT / "data"
-RUNS_DIR = PROJECT_ROOT / "runs"
-REPORT_DIR = PROJECT_ROOT / "Report"
+# Main directories - ONLY Runs folder is used for outputs
+RUNS_DIR = PROJECT_ROOT / "Runs"
 CONFIG_DIR = PROJECT_ROOT / "config"
 
 # Ensure directories exist
-DATA_DIR.mkdir(exist_ok=True)
 RUNS_DIR.mkdir(exist_ok=True)
-REPORT_DIR.mkdir(exist_ok=True)
-
 
 # ============================================================================
-# FILE PATHS (Default - can be overridden by ProjectLoader)
+# OUTPUT FILE NAMES (used within run directories)
 # ============================================================================
 
-# UC (Utilization Certificate) file settings
-UC_EXCEL_FILE = DATA_DIR / "Tata Bluescope UC Plan.xlsx"
+# These are just filenames - actual paths are in run_dir
+UC_JSON_FILENAME = "uc_processed.json"
+ACTIVITY_JSON_FILENAME = "milestone_activities_processed.json"
+FUNDING_JSON_FILENAME = "funding_tranches_processed.json"
+RISK_REPORT_FILENAME = "master_risk_report.json"
+FILE_INVENTORY_FILENAME = "file_inventory.json"
+REPORT_FILENAME = "Project_Risk_Report.md"
+
+# Sheet name defaults
 UC_SHEET_NAME = "Sheet1"
-
-# Activity Plan file settings
-ACTIVITY_EXCEL_FILE = DATA_DIR / "Tata Bluescope_Plan_v1.0_20-Nov-2025.xlsx"
 ACTIVITY_SHEET_NAME = None  # Auto-detect
-
-# Billing Tracker file settings
-BILLING_EXCEL_FILE = DATA_DIR / "Ivanti billing & collections tracker.xlsx"
 BILLING_SHEET_NAME = "Sheet1"
-
-# Metadata extraction file
-METADATA_EXCEL_FILE = DATA_DIR / "Ivanti activity sheet_v2.xlsx"
-
-# Company context for zero-cost activity identification
-COMPANY_CONTEXT_FILE = DATA_DIR / "company_context.md"
-
-# Output JSON files (in DATA_DIR for backward compatibility)
-UC_JSON_PATH = DATA_DIR / "uc_processed.json"
-ACTIVITY_JSON_PATH = DATA_DIR / "milestone_activities_processed.json"
-FUNDING_JSON_PATH = DATA_DIR / "funding_tranches_processed.json"
-RISK_REPORT_PATH = DATA_DIR / "master_risk_report.json"
-FILE_INVENTORY_PATH = DATA_DIR / "file_inventory.json"
 
 
 # ============================================================================
@@ -143,7 +126,7 @@ AI_BATCH_SIZE = 5
 # ============================================================================
 
 OLLAMA_URL = "http://localhost:11434/api/generate"
-OLLAMA_MODEL = "qwen3:4b"
+OLLAMA_MODEL = "gemma3:12b"
 OLLAMA_TIMEOUT = 300  # seconds
 OLLAMA_CONTEXT_SIZE = 4096
 
@@ -164,11 +147,6 @@ LOG_LEVEL = logging.INFO
 def get_project_root():
     """Return the project root directory."""
     return PROJECT_ROOT
-
-
-def get_data_dir():
-    """Return the data directory path."""
-    return DATA_DIR
 
 
 def get_runs_dir():
@@ -275,20 +253,12 @@ if __name__ == "__main__":
     print("=" * 60)
     
     print(f"\nProject Root: {PROJECT_ROOT}")
-    print(f"Data Directory: {DATA_DIR}")
     print(f"Runs Directory: {RUNS_DIR}")
     
-    print("\nFile Existence Check:")
-    files_to_check = [
-        ("UC Excel", UC_EXCEL_FILE),
-        ("Activity Excel", ACTIVITY_EXCEL_FILE),
-        ("Billing Excel", BILLING_EXCEL_FILE),
-        ("Company Context", COMPANY_CONTEXT_FILE),
-    ]
-    
-    for name, path in files_to_check:
-        status = "✓" if path.exists() else "✗"
-        print(f"  {status} {name}: {path.name}")
+    print("\nOllama/AI Settings:")
+    print(f"  URL: {OLLAMA_URL}")
+    print(f"  Model: {OLLAMA_MODEL}")
+    print(f"  Timeout: {OLLAMA_TIMEOUT}s")
     
     print("\nDate Normalization Test:")
     test_dates = [

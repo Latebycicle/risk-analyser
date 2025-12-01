@@ -3,17 +3,31 @@
 Run Risk Analysis on Any Project Folder
 
 This script processes any project folder and runs complete risk analysis.
+All outputs go to a timestamped run directory - NO Data/ folder dependency.
+
 Usage: python run_project_analysis.py <project_folder_path>
+
+Architecture:
+    1. Identify project files using ProjectLoader
+    2. Create timestamped run directory
+    3. Run processors directly on source files → output to run_dir
+    4. Run risk analysis on run_dir data
+    5. Generate report in run_dir
 """
 
 import sys
 import json
-import shutil
-from pathlib import Path
-from project_loader import ProjectLoader
-import subprocess
 import logging
-from run_manager import create_new_run, mark_run_complete, get_run_output_dir
+from pathlib import Path
+from datetime import datetime
+
+# Add src to path
+PROJECT_ROOT = Path(__file__).parent.resolve()
+sys.path.insert(0, str(PROJECT_ROOT))
+sys.path.insert(0, str(PROJECT_ROOT / "src"))
+
+from src.project_loader import ProjectLoader
+from src.run_manager import create_new_run, mark_run_complete
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
@@ -22,22 +36,22 @@ def run_analysis_for_project(project_path):
     """
     Run complete risk analysis for a project folder.
     
+    All outputs go directly to run_dir - no intermediate Data/ folder.
+    
     Steps:
     1. Identify project files using ProjectLoader
-    2. Copy files to Data/ directory
-    3. Update processor configurations
-    4. Run UC processor (process_uc.py)
-    5. Run Activity processor (process_activities.py)
-    6. Run Billing processor if available (process_billing.py)
-    7. Run risk analysis (run_risk_analysis.py)
-    8. Generate report (generate_report.py)
+    2. Create timestamped run directory
+    3. Run UC processor → output to run_dir
+    4. Run Activity processor → output to run_dir
+    5. Run Billing processor (if available) → output to run_dir
+    6. Run risk analysis on run_dir data
     """
     
     project_path = Path(project_path)
     if not project_path.exists():
         raise ValueError(f"Project folder not found: {project_path}")
     
-    # Create a new run
+    # Create a new run directory
     run_id, run_dir = create_new_run()
     
     print("="*70)
@@ -55,137 +69,131 @@ def run_analysis_for_project(project_path):
     
     print("📁 Identified Files:")
     print("-"*70)
+    
     if files['uc']:
-        uc_path = Path(files['uc']) if isinstance(files['uc'], str) else files['uc']
+        uc_path = Path(files['uc'])
         print(f"  UC File      : ✓ {uc_path.name}")
     else:
         print(f"  UC File      : ✗ NOT FOUND (Required)")
         return False
         
     if files['activity']:
-        activity_path = Path(files['activity']) if isinstance(files['activity'], str) else files['activity']
+        activity_path = Path(files['activity'])
         print(f"  Activity File: ✓ {activity_path.name}")
     else:
         print(f"  Activity File: ✗ NOT FOUND (Required)")
         return False
         
     if files['billing']:
-        billing_path = Path(files['billing']) if isinstance(files['billing'], str) else files['billing']
+        billing_path = Path(files['billing'])
         print(f"  Billing File : ✓ {billing_path.name}")
     else:
-        print(f"  Billing File : ⚠ Not found (Optional)")
+        print(f"  Billing File : ⚠ Not found (Optional - Fallback Mode will be used)")
         billing_path = None
     
     print(f"  Context Files: {len(files['context'])} additional files")
     print()
     
-    # Convert to Path objects for consistency
+    # Convert to Path objects
     uc_path = Path(files['uc'])
     activity_path = Path(files['activity'])
     billing_path = Path(files['billing']) if files['billing'] else None
     
-    # Save file inventory for report generation
+    # Save file inventory to run directory
     file_inventory = {
+        'project_path': str(project_path),
         'uc': str(uc_path),
         'activity': str(activity_path),
         'billing': str(billing_path) if billing_path else None,
-        'context': [str(Path(f)) for f in files['context']]
+        'context': [str(Path(f)) for f in files['context']],
+        'analyzed_at': datetime.now().isoformat()
     }
     
-    # Step 2: Copy files to Data directory
-    logging.info("Step 2: Copying files to Data/ directory...")
-    data_dir = Path("Data")
-    data_dir.mkdir(exist_ok=True)
-    
-    # Backup existing data
-    backup_dir = Path("Data_Backup")
-    if data_dir.exists():
-        logging.info("  Creating backup of existing Data/ folder...")
-        if backup_dir.exists():
-            shutil.rmtree(backup_dir)
-        shutil.copytree(data_dir, backup_dir, dirs_exist_ok=True)
-    
-    # Copy UC file
-    uc_dest = data_dir / uc_path.name
-    shutil.copy2(uc_path, uc_dest)
-    logging.info(f"  Copied: {uc_path.name}")
-    
-    # Copy Activity file
-    activity_dest = data_dir / activity_path.name
-    shutil.copy2(activity_path, activity_dest)
-    logging.info(f"  Copied: {activity_path.name}")
-    
-    # Copy Billing file if exists
-    if billing_path:
-        billing_dest = data_dir / billing_path.name
-        shutil.copy2(billing_path, billing_dest)
-        logging.info(f"  Copied: {billing_path.name}")
-    
-    # Save file inventory to Data directory for report generation
-    file_inventory_path = data_dir / 'file_inventory.json'
+    file_inventory_path = run_dir / 'file_inventory.json'
     with open(file_inventory_path, 'w', encoding='utf-8') as f:
         json.dump(file_inventory, f, indent=2)
-    logging.info("  Saved file inventory")
+    logging.info(f"Saved file inventory to: {file_inventory_path}")
     
+    # Step 2: Run UC Processor
     print()
+    logging.info("Step 2: Running UC processor...")
+    try:
+        from src.process_uc import process_uc_file, save_uc_data
+        uc_data = process_uc_file(uc_path)
+        save_uc_data(uc_data, run_dir)
+        print("  ✓ UC data processed and saved")
+    except Exception as e:
+        logging.error(f"UC processor failed: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
     
-    # Step 3: Update processor configurations
-    logging.info("Step 3: Updating processor configurations...")
+    # Step 3: Run Activity Processor
+    logging.info("Step 3: Running Activity processor...")
+    try:
+        from src.process_activities import process_activities_file, save_activities_data
+        activity_data = process_activities_file(activity_path)
+        save_activities_data(activity_data, run_dir)
+        print("  ✓ Activity data processed and saved")
+    except Exception as e:
+        logging.error(f"Activity processor failed: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
     
-    # Update process_uc.py
-    update_process_uc_config(uc_dest.name)
-    
-    # Update process_activities.py
-    update_process_activities_config(activity_dest.name)
-    
-    # Update process_billing.py if needed
+    # Step 4: Run Billing Processor (if available)
     if billing_path:
-        update_process_billing_config(billing_dest.name)
+        logging.info("Step 4: Running Billing processor...")
+        try:
+            from src.process_billing import process_billing_file, save_billing_data
+            
+            # Extract reference months from UC data for smart date inference
+            reference_months = list(uc_data.get('monthly_data', {}).keys())
+            logging.info(f"  Reference months for date inference: {reference_months[:3]}...{reference_months[-1] if reference_months else ''}")
+            
+            billing_data = process_billing_file(billing_path, reference_months=reference_months)
+            save_billing_data(billing_data, run_dir)
+            print("  ✓ Billing data processed and saved")
+        except Exception as e:
+            logging.warning(f"Billing processor failed: {e}")
+            print("  ⚠ Billing processor failed - will use Fallback Mode")
+    else:
+        logging.info("Step 4: Skipping Billing processor (no billing file)")
+        print("  ⏭️  Skipping billing - will use Fallback Mode")
     
     print()
     
-    # Step 4: Run processors
-    python_exe = sys.executable
-    
-    logging.info("Step 4: Running UC processor...")
-    result = subprocess.run([python_exe, "process_uc.py"], capture_output=True, text=True)
-    if result.returncode != 0:
-        logging.error(f"UC processor failed: {result.stderr}")
+    # Step 5: Run Risk Analysis
+    logging.info("Step 5: Running risk analysis...")
+    try:
+        from src.run_risk_analysis import run_analysis
+        
+        # Load company context if available
+        company_context = ""
+        for context_file in files['context']:
+            if 'context' in Path(context_file).name.lower():
+                try:
+                    with open(context_file, 'r', encoding='utf-8') as f:
+                        company_context = f.read()
+                    break
+                except:
+                    pass
+        
+        result = run_analysis(
+            run_dir=run_dir,
+            company_context=company_context,
+            activity_excel=activity_path
+        )
+        
+        if result != 0:
+            logging.error("Risk analysis failed")
+            return False
+            
+    except Exception as e:
+        logging.error(f"Risk analysis failed: {e}")
+        import traceback
+        traceback.print_exc()
         return False
-    print(result.stdout)
-    
-    logging.info("Step 5: Running Activity processor...")
-    result = subprocess.run([python_exe, "process_activities.py"], capture_output=True, text=True)
-    if result.returncode != 0:
-        logging.error(f"Activity processor failed: {result.stderr}")
-        return False
-    print(result.stdout)
-    
-    if billing_path:
-        logging.info("Step 6: Running Billing processor...")
-        result = subprocess.run([python_exe, "process_billing.py"], capture_output=True, text=True)
-        if result.returncode != 0:
-            logging.warning(f"Billing processor failed: {result.stderr}")
-    
-    print()
-    
-    # Step 7: Run risk analysis
-    logging.info("Step 7: Running risk analysis...")
-    result = subprocess.run([python_exe, "run_risk_analysis.py"], capture_output=True, text=True)
-    if result.returncode != 0:
-        logging.error(f"Risk analysis failed: {result.stderr}")
-        return False
-    print(result.stdout)
-    
-    print()
-    
-    # Step 8: Generate report
-    logging.info("Step 8: Generating report...")
-    result = subprocess.run([python_exe, "generate_report.py"], capture_output=True, text=True)
-    if result.returncode != 0:
-        logging.error(f"Report generation failed: {result.stderr}")
-        return False
-    print(result.stdout)
     
     print()
     print("="*70)
@@ -193,10 +201,10 @@ def run_analysis_for_project(project_path):
     print("="*70)
     print(f"Run ID: {run_id}")
     print(f"Output Directory: {run_dir}")
-    print(f"  - uc_processed.json")
-    print(f"  - milestone_activities_processed.json")
-    print(f"  - master_risk_report.json (if generated)")
-    print(f"Report location: Report/Project_Risk_Report.md")
+    print()
+    print("Generated files:")
+    for f in sorted(run_dir.iterdir()):
+        print(f"  - {f.name}")
     print("="*70)
     
     # Mark run as complete
@@ -205,68 +213,16 @@ def run_analysis_for_project(project_path):
     return True
 
 
-def update_process_uc_config(filename):
-    """Update EXCEL_FILE in process_uc.py"""
-    with open("process_uc.py", "r") as f:
-        content = f.read()
-    
-    # Replace EXCEL_FILE line
-    lines = content.split('\n')
-    for i, line in enumerate(lines):
-        if line.strip().startswith("EXCEL_FILE = "):
-            lines[i] = f"EXCEL_FILE = 'Data/{filename}'"
-            break
-    
-    with open("process_uc.py", "w") as f:
-        f.write('\n'.join(lines))
-    
-    logging.info(f"  Updated process_uc.py: EXCEL_FILE = 'Data/{filename}'")
-
-
-def update_process_activities_config(filename):
-    """Update EXCEL_FILE in process_activities.py"""
-    with open("process_activities.py", "r") as f:
-        content = f.read()
-    
-    # Replace EXCEL_FILE line
-    lines = content.split('\n')
-    for i, line in enumerate(lines):
-        if line.strip().startswith("EXCEL_FILE = "):
-            lines[i] = f"EXCEL_FILE = 'Data/{filename}'"
-            break
-    
-    with open("process_activities.py", "w") as f:
-        f.write('\n'.join(lines))
-    
-    logging.info(f"  Updated process_activities.py: EXCEL_FILE = 'Data/{filename}'")
-
-
-def update_process_billing_config(filename):
-    """Update EXCEL_FILE in process_billing.py"""
-    try:
-        with open("process_billing.py", "r") as f:
-            content = f.read()
-        
-        # Replace EXCEL_FILE line
-        lines = content.split('\n')
-        for i, line in enumerate(lines):
-            if line.strip().startswith("EXCEL_FILE = "):
-                lines[i] = f"EXCEL_FILE = 'Data/{filename}'"
-                break
-        
-        with open("process_billing.py", "w") as f:
-            f.write('\n'.join(lines))
-        
-        logging.info(f"  Updated process_billing.py: EXCEL_FILE = 'Data/{filename}'")
-    except FileNotFoundError:
-        logging.warning("  process_billing.py not found, skipping...")
-
-
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: python run_project_analysis.py <project_folder_path>")
         print("\nExample:")
-        print("  python run_project_analysis.py '/Users/akhilr/Documents/Sambhav Foundation/Projects/TataBluescope'")
+        print("  python run_project_analysis.py '/path/to/project/folder'")
+        print("\nThe script will:")
+        print("  1. Auto-detect UC, Activity, and Billing files in the folder")
+        print("  2. Process them and run risk analysis")
+        print("  3. Output everything to a timestamped Runs/ directory")
+        print("\n⚠️  No Data/ folder is used - all outputs go to Runs/")
         sys.exit(1)
     
     project_path = sys.argv[1]

@@ -34,20 +34,16 @@ import requests
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
 
-def call_ollama_api(prompt: str, model: str = None) -> str:
+def call_ollama_api(prompt: str) -> str:
     """
-    Call the Ollama API with the specified model.
+    Call the Ollama API with the configured model.
     
     Args:
         prompt: The prompt to send to the LLM
-        model: The Ollama model to use (defaults to config setting)
         
     Returns:
         The LLM's response as a string
     """
-    if model is None:
-        model = OLLAMA_MODEL
-    
     schema = {
         "type": "object",
         "properties": {
@@ -58,7 +54,7 @@ def call_ollama_api(prompt: str, model: str = None) -> str:
     }
     
     payload = {
-        "model": model,
+        "model": OLLAMA_MODEL,
         "prompt": prompt,
         "stream": False,
         "format": schema,
